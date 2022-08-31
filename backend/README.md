@@ -94,3 +94,8 @@ There are `@TODO` comments throughout the `./backend/src`. We recommend tackling
 
 1. `./src/auth/auth.py`
 2. `./src/api.py`
+
+## Testing users
+
+- manager@email.com/Manager@password
+- barista@email.com/Barista@password

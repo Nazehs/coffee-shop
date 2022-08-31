@@ -1,9 +1,6 @@
-from audioop import cross
-import os
 from flask import Flask, request, jsonify, abort
-from sqlalchemy import exc
 import json
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, guard_auth
@@ -18,7 +15,6 @@ db_drop_and_create_all()
 
 
 @app.route('/drinks', methods=['GET'])
-@cross_origin(headers=["Content-Type", "Authorization"])
 def get_drinks():
     try:
         drinks = Drink.query.all()
@@ -33,7 +29,6 @@ def get_drinks():
 
 
 @app.route('/drinks-detail/<int:id>', methods=['GET'])
-# @requires_auth
 @guard_auth('get:drinks-detail')
 def get_single_drink(id):
     drink = Drink.query.get(id)
@@ -46,7 +41,6 @@ def get_single_drink(id):
 
 
 @app.route('/drinks-detail', methods=['GET'])
-# @requires_auth
 @guard_auth('get:drinks-detail')
 def get_drinks_details():
     try:
@@ -61,7 +55,6 @@ def get_drinks_details():
 
 
 @app.route('/drinks', methods=['POST'])
-# @requires_auth
 @guard_auth('post:drinks')
 def create_drinks():
     body = request.get_json()
@@ -81,7 +74,6 @@ def create_drinks():
 
 
 @app.route('/drinks/<int:id>', methods=['PATCH'])
-# @requires_auth
 @guard_auth('patch:drinks')
 def update_drinks(id):
     drink = Drink.query.get(id)
@@ -107,8 +99,8 @@ def update_drinks(id):
 @app.route('/drinks/<int:id>', methods=['DELETE'])
 @guard_auth('delete:drinks')
 def delete_drinks(id):
-    print(id)
     drink = Drink.query.get(id)
+
     if drink is None:
         abort(404)
     try:
