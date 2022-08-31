@@ -6,7 +6,7 @@ import json
 from flask_cors import CORS, cross_origin
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
-from .auth.auth import AuthError, requires_auth, guard_auth
+from .auth.auth import AuthError, guard_auth
 
 app = Flask(__name__)
 setup_db(app)
@@ -18,12 +18,18 @@ db_drop_and_create_all()
 
 
 @app.route('/drinks', methods=['GET'])
+@cross_origin(headers=["Content-Type", "Authorization"])
 def get_drinks():
-    drinks = Drink.query.all()
-    return jsonify({
-        'success': True,
-        'drinks': [drink.short() for drink in drinks]
-    }), 200
+    try:
+        drinks = Drink.query.all()
+        drinks = [drink.short() for drink in drinks]
+        return jsonify({
+            'success': True,
+            'drinks': drinks
+        }), 200
+    except Exception as e:
+        print(e)
+        abort(422)
 
 
 @app.route('/drinks-detail/<int:id>', methods=['GET'])
@@ -75,7 +81,7 @@ def create_drinks():
 
 
 @app.route('/drinks/<int:id>', methods=['PATCH'])
-@requires_auth
+# @requires_auth
 @guard_auth('patch:drinks')
 def update_drinks(id):
     drink = Drink.query.get(id)
