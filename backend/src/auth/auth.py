@@ -1,9 +1,7 @@
 import os
 from jose import jwt
-from flask_cors import cross_origin
-from flask import Flask, request, jsonify, _request_ctx_stack
 import json
-from os import abort
+from flask import request, abort
 from six.moves.urllib.request import urlopen
 from functools import wraps
 from dotenv import load_dotenv
